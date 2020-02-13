@@ -1,0 +1,5 @@
+spring:
+  redis:
+    host: www.isuyu.cn
+    port: 6379
+    password: adminadmin
