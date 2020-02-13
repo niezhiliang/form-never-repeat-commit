@@ -32,4 +32,12 @@ public class FormController {
     public String commit() {
         return "success";
     }
+
+    @RequestMapping(value = "test")
+    public String test() {
+        System.out.println(redisTools.delete("hello"));
+        redisTools.save("111","2356");
+        System.out.println(redisTools.delete("111"));
+        return "success";
+    }
 }

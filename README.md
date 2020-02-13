@@ -8,9 +8,9 @@
 
 **3、** 前端在form表单提交的时候在请求头中携带一个formId的参数，值为加载时获取到的formId
 
-**4、** 后端基于AOP拦截请求，判断请求头是否携带formId，并判断是否存在缓存中
-如果不在，告诉前端fromId不存在或别的提示信息，如果存在将缓存中的formId删除掉
-并执行方法
+**4、** 后端基于AOP拦截请求，判断请求头是否携带formId，并通过删除操作，如果返回true表示该
+formId存在，如果返回false 表示该formId不合法。（这里不使用select + delete 两步操作可能会发生并发）返回true
+则执行方法 否则返回异常信息给前端。
 
 ### 后端实现
 
@@ -53,9 +53,9 @@ public @interface Form {
 
         if (null == formId) {
             throw new RuntimeException("请在头信息中携带formId");
-        } else if (!redisTools.hasKey(formId)){
+        //删除缓存中的formId 这里直接使用delete是避免并发情况  使用seect + delete 存在并发问题
+        } else if (!redisTools.delete(formId)){
             throw new RuntimeException("非法formId,请获取后重试");
         }
-        redisTools.delete(formId);
     }
 ```

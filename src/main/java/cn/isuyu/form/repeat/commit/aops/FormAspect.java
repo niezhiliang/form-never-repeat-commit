@@ -23,10 +23,9 @@ public class FormAspect {
 
         if (null == formId) {
             throw new RuntimeException("请在头信息中携带formId");
-        } else if (!redisTools.hasKey(formId)){
+        //删除缓存中的formId 这里直接使用delete是避免并发情况  使用seect + delete 存在并发问题
+        } else if (!redisTools.delete(formId)){
             throw new RuntimeException("非法formId,请获取后重试");
         }
-        //删除缓存中的formId
-        redisTools.delete(formId);
     }
 }
